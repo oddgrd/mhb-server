@@ -1,0 +1,25 @@
+[package]
+name = "mhb_server"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[workspace]
+members = [".", "entity"]
+
+[dependencies]
+entity = { path = "entity" }
+actix-web = "4"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+serde = { version = "1.0", features = ["derive"] }
+serde-aux = "3"
+config = "0.13"
+secrecy = { version = "0.8", features = ["serde"] }
+anyhow = "1"
+
+[dependencies.sea-orm]
+version = "^0"
+features = [ "runtime-actix-native-tls", "sqlx-postgres", "debug-print"]
