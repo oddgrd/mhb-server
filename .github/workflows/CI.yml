@@ -1,0 +1,42 @@
+name: CI
+
+on: [push, pull_request]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+    style:
+      name: Rustfmt
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions-rs/toolchain@v1
+          with:
+            toolchain: stable
+            override: true
+            components: rustfmt
+        - uses: actions-rs/cargo@v1
+          with:
+            command: fmt
+            args: --all -- --check
+    
+    clippy:
+      name: Clippy
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+
+        - name: Install stable toolchain
+          uses: actions-rs/toolchain@v1
+          with:
+            toolchain: stable
+            components: clippy
+            override: true
+
+        - name: Run clippy
+          uses: actions-rs/clippy-check@v1
+          with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+            args: --all-targets --no-deps -- --D warnings
