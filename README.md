@@ -1,0 +1,1 @@
+This (WIP) project is a refactor of my previous [MyHomeBoard](https://github.com/oddgrd/myhomeboard) backend which was written in Typescript. The design of the Rust refactor is heavily inspired by [Brian Konkle's](https://twitter.com/bkonkle) great article series on [Async GrapQL with Rust](https://konkle.us/async-graphql-rust-1-introduction/).

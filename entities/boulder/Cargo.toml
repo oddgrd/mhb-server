@@ -1,0 +1,21 @@
+[package]
+name = "mhb-boulder"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "boulder"
+path = "src/lib.rs"
+
+[dependencies]
+async-graphql = { version = "^4.0", features = ["chrono"] }
+async-trait = "0.1.49"
+chrono = { version = "0.4.20", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
+sea-orm = { version = "^0.9", features = [
+    "sqlx-postgres",
+    "runtime-tokio-rustls",
+    "macros",
+    "mock",
+], default-features = false }
+anyhow = "1"

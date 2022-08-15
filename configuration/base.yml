@@ -1,11 +1,11 @@
 application:
-  port: 8000
+  port: 8005
 
 database:
   host: "127.0.0.1"
-  port: 5432
+  port: 1701
   username: "postgres"
-  password: "password"
+  password: "postgres"
   database_name: "mhb"
 
 redis_uri: "redis://127.0.0.1:6379"

@@ -4,22 +4,21 @@ version = "0.1.0"
 edition = "2021"
 publish = false
 
-[lib]
-path = "src/lib.rs"
-
 [workspace]
-members = [".", "entity"]
+members = [".", "entities/*"]
 
 [dependencies]
-entity = { path = "entity" }
-actix-web = "4"
+mhb-boulder = { path = "entities/boulder" }
+axum = "^0.5.1"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 serde = { version = "1.0", features = ["derive"] }
 serde-aux = "3"
 config = "0.13"
 secrecy = { version = "0.8", features = ["serde"] }
 anyhow = "1"
+async-graphql = { version = "^4.0", features = ["chrono"] }
+async-graphql-axum = "^4.0.6"
 
 [dependencies.sea-orm]
-version = "^0"
-features = [ "runtime-actix-native-tls", "sqlx-postgres", "debug-print"]
+version = "0.9.1"
+features = [ "runtime-tokio-rustls", "sqlx-postgres", "debug-print"]

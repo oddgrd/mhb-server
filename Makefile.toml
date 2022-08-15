@@ -1,0 +1,23 @@
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+
+[config]
+main_project_member = "api"
+
+[tasks.db-create]
+workspace = false
+cwd = "./"
+command = "sqlx"
+args = ["db", "create"]
+
+[tasks.db-migrate]
+workspace = false
+cwd = "./"
+command = "sqlx"
+args = ["migrate", "run"]
+
+[tasks.docker]
+workspace = false
+cwd = "./"
+command = "docker-compose"
+args = ["-f", "docker-compose.yml", "${@}"]
