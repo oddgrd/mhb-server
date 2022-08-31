@@ -8,17 +8,17 @@ publish = false
 members = [".", "entities/*"]
 
 [dependencies]
-mhb-boulder = { path = "entities/boulder" }
-axum = "^0.5.1"
-tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-serde = { version = "1.0", features = ["derive"] }
-serde-aux = "3"
-config = "0.13"
-secrecy = { version = "0.8", features = ["serde"] }
 anyhow = "1"
 async-graphql = { version = "^4.0", features = ["chrono"] }
 async-graphql-axum = "^4.0.6"
+axum = "^0.5.1"
+config = "0.13"
+mhb-boulder = { path = "entities/boulder" }
+secrecy = { version = "0.8", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde-aux = "3"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 [dependencies.sea-orm]
 version = "0.9.1"
-features = [ "runtime-tokio-rustls", "sqlx-postgres", "debug-print"]
+features = ["runtime-tokio-rustls", "sqlx-postgres", "debug-print"]

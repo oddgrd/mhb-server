@@ -20,7 +20,7 @@ pub struct Model {
     pub updated_at: DateTime,
 
     /// The Boulder's difficulty grade
-    pub grade: i32,
+    pub grade: Option<i32>,
 
     /// Whether the Boulder is active
     pub is_active: bool,

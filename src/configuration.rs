@@ -29,10 +29,11 @@ pub struct DatabaseSettings {
 impl DatabaseSettings {
     pub fn connection_string(&self) -> String {
         format!(
-            "postgres://{}:{}@{}/{}",
+            "postgres://{}:{}@{}:{}/{}",
             self.username,
             self.password.expose_secret(),
             self.host,
+            self.port,
             self.database_name
         )
     }

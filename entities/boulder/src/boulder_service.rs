@@ -1,25 +1,24 @@
-use std::sync::Arc;
-
 use async_trait::async_trait;
 use sea_orm::{DatabaseConnection, EntityTrait};
+use std::sync::Arc;
 
 use crate::boulder_model::{self, Boulder, BoulderOption};
 
 #[async_trait]
-pub trait BoulderService: Sync + Send {
+pub trait BoulderServiceTrait: Sync + Send {
     /// Get an individual `Boulder` by id
     async fn get(&self, id: &str) -> anyhow::Result<Option<Boulder>>;
 }
 
 /// The default `BoulderService` struct.
-pub struct DefaultBoulderService {
+pub struct BoulderService {
     /// The SeaOrm database connection, wrapped in an arc to allow using the same
     /// pool across threads
     db: Arc<DatabaseConnection>,
 }
 
 /// The default `BoulderService` implementation
-impl DefaultBoulderService {
+impl BoulderService {
     /// Create a new `BoulderService` instance
     pub fn new(db: &Arc<DatabaseConnection>) -> Self {
         Self { db: db.clone() }
@@ -27,7 +26,7 @@ impl DefaultBoulderService {
 }
 
 #[async_trait]
-impl BoulderService for DefaultBoulderService {
+impl BoulderServiceTrait for BoulderService {
     async fn get(&self, id: &str) -> anyhow::Result<Option<Boulder>> {
         let query = boulder_model::Entity::find_by_id(id.to_owned());
 

@@ -1,0 +1,7 @@
+CREATE TABLE boulders (
+    id TEXT DEFAULT generate_ulid() NOT NULL PRIMARY KEY,
+    grade INT,
+    is_active BOOL NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);

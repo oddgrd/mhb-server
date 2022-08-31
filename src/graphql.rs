@@ -1,20 +1,40 @@
+use crate::schema::AppSchema;
+use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
+use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
+use axum::{
+    response::{Html, IntoResponse},
+    Extension,
+};
+use boulder::boulder_service::{BoulderService, BoulderServiceTrait};
+use sea_orm::DatabaseConnection;
 use std::sync::Arc;
 
-use async_graphql::{EmptyMutation, EmptySubscription, MergedObject, Schema};
-use boulder::boulder_resolvers::BouldersQuery;
+use crate::configuration::Settings;
 
-use crate::startup::Context;
+pub struct Context {
+    pub configuration: Settings,
+    pub boulders: Arc<dyn BoulderServiceTrait>,
+    pub db_pool: Arc<DatabaseConnection>,
+}
 
-#[derive(MergedObject, Default)]
-pub struct Query(BouldersQuery);
+impl Context {
+    pub async fn init(configuration: Settings) -> anyhow::Result<Self> {
+        let db_pool =
+            Arc::new(sea_orm::Database::connect(configuration.database.connection_string()).await?);
+        Ok(Self {
+            configuration,
+            boulders: Arc::new(BoulderService::new(&db_pool)),
+            db_pool,
+        })
+    }
+}
 
-pub type AppSchema = Schema<Query, EmptyMutation, EmptySubscription>;
+pub async fn graphql_handler(schema: Extension<AppSchema>, req: GraphQLRequest) -> GraphQLResponse {
+    schema.execute(req.into_inner()).await.into()
+}
 
-/// Create the graphql schema with dependencies injected into the context
-pub fn create_schema(context: Arc<Context>) -> anyhow::Result<AppSchema> {
-    Ok(
-        Schema::build(Query::default(), EmptyMutation, EmptySubscription)
-            .data(context.configuration.clone())
-            .finish(),
-    )
+pub async fn graphql_playground() -> impl IntoResponse {
+    Html(playground_source(GraphQLPlaygroundConfig::new(
+        "/api/graphql",
+    )))
 }
