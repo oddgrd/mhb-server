@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use sea_orm::{DatabaseConnection, EntityTrait};
+use sea_orm::{entity::ActiveModelTrait, DatabaseConnection, EntityTrait, Set};
 use std::sync::Arc;
 
 use crate::boulder_model::{self, Boulder, BoulderOption};
@@ -8,6 +8,9 @@ use crate::boulder_model::{self, Boulder, BoulderOption};
 pub trait BoulderServiceTrait: Sync + Send {
     /// Get an individual `Boulder` by id
     async fn get(&self, id: &str) -> anyhow::Result<Option<Boulder>>;
+
+    /// Create a `Boulder` with the given title
+    async fn create(&self, title: &str) -> anyhow::Result<Boulder>;
 }
 
 /// The default `BoulderService` struct.
@@ -35,5 +38,16 @@ impl BoulderServiceTrait for BoulderService {
         let boulder: BoulderOption = boulder.into();
 
         Ok(boulder.into())
+    }
+
+    async fn create(&self, title: &str) -> anyhow::Result<Boulder> {
+        let boulder = boulder_model::ActiveModel {
+            title: Set(title.into()),
+            ..Default::default()
+        }
+        .insert(&*self.db)
+        .await?;
+
+        Ok(boulder)
     }
 }

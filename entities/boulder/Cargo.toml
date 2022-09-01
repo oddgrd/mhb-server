@@ -12,6 +12,8 @@ anyhow = "1"
 async-graphql = { version = "^4.0", features = ["chrono"] }
 async-trait = "0.1.49"
 chrono = { version = "0.4.20", features = ["serde"] }
+http = "0.2.8"
+mhb-utils = { path = "../utils" }
 sea-orm = { version = "^0.9", features = [
     "sqlx-postgres",
     "runtime-tokio-rustls",

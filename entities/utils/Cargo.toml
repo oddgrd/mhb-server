@@ -1,0 +1,9 @@
+[package]
+name = "mhb-utils"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+async-graphql = { version = "^4.0", features = ["chrono"] }
+http = "0.2.8"
