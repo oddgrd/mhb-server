@@ -6,25 +6,21 @@ use axum::{
     Extension,
 };
 use boulder::boulder_service::{BoulderService, BoulderServiceTrait};
-use sea_orm::DatabaseConnection;
+use sea_orm::{DatabaseConnection, SqlxPostgresConnector};
+use sqlx::PgPool;
 use std::sync::Arc;
 
-use crate::configuration::Settings;
-
 pub struct Context {
-    pub configuration: Settings,
     pub boulders: Arc<dyn BoulderServiceTrait>,
-    pub db_pool: Arc<DatabaseConnection>,
+    pub db_conn: Arc<DatabaseConnection>,
 }
 
 impl Context {
-    pub async fn init(configuration: Settings) -> anyhow::Result<Self> {
-        let db_pool =
-            Arc::new(sea_orm::Database::connect(configuration.database.connection_string()).await?);
+    pub async fn init(pool: PgPool) -> anyhow::Result<Context> {
+        let db_conn = Arc::new(SqlxPostgresConnector::from_sqlx_postgres_pool(pool));
         Ok(Self {
-            configuration,
-            boulders: Arc::new(BoulderService::new(&db_pool)),
-            db_pool,
+            boulders: Arc::new(BoulderService::new(&db_conn)),
+            db_conn,
         })
     }
 }

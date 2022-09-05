@@ -16,7 +16,6 @@ pub type AppSchema = Schema<Query, Mutation, EmptySubscription>;
 pub fn create_schema(context: Arc<Context>) -> anyhow::Result<AppSchema> {
     Ok(
         Schema::build(Query::default(), Mutation::default(), EmptySubscription)
-            .data(context.configuration.clone())
             .data(context.boulders.clone())
             .finish(),
     )

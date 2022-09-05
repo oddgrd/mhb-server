@@ -5,20 +5,24 @@ edition = "2021"
 publish = false
 
 [workspace]
-members = [".", "entities/*"]
+members = [".", "libs/*"]
 
 [dependencies]
 anyhow = "1"
 async-graphql = { version = "^4.0", features = ["chrono"] }
 async-graphql-axum = "^4.0.6"
-axum = "^0.5.1"
-config = "0.13"
-mhb-boulder = { path = "entities/boulder" }
-secrecy = { version = "0.8", features = ["serde"] }
+axum = "0.5.15"
+mhb-boulder = { path = "libs/boulder" }
 serde = { version = "1.0", features = ["derive"] }
-serde-aux = "3"
+shuttle-service = { version = "0.5.1", features = ["web-axum", "sqlx-postgres"] }
+sqlx = { version = "0.6", features = ["runtime-tokio-native-tls", "postgres", "migrate"] }
+sync_wrapper = "0.1"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 [dependencies.sea-orm]
 version = "0.9.1"
-features = ["runtime-tokio-rustls", "sqlx-postgres", "debug-print"]
+features = ["runtime-tokio-native-tls", "sqlx-postgres", "debug-print"]
+
+[dev-dependencies]
+reqwest = "0.11"
+uuid = { version = "1.1.2", features = ["v4", "serde"] }
