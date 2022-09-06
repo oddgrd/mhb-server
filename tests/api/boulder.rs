@@ -33,7 +33,7 @@ const GET_BOULDER: &str = r#"
 "#;
 
 #[tokio::test]
-async fn create_boulder_returns_a_200() {
+async fn create_boulder_returns_a_200_and_boulder_data() {
     let app = spawn_app().await;
     let response = app
         .graphql_query(
@@ -48,12 +48,13 @@ async fn create_boulder_returns_a_200() {
         .await;
 
     let status = response.status().as_u16();
-    let body: Value = serde_json::from_slice(&response.bytes().await.unwrap()).unwrap();
+    assert_eq!(status, 200);
 
+    let body: Value = serde_json::from_slice(&response.bytes().await.unwrap()).unwrap();
     let boulder = &body["data"]["createBoulder"]["boulder"];
 
-    assert_eq!(status, 200);
     assert_eq!(boulder["title"], "hello world");
+    assert_eq!(boulder["grade"].as_i64().unwrap(), 5);
 
     // Verify that the new boulder isn't published by default
     assert_eq!(boulder["published"], false);
@@ -75,11 +76,12 @@ async fn create_boulder_persists_the_new_boulder() {
         .await;
 
     let status = response.status().as_u16();
+    assert_eq!(status, 200);
+
     let body: Value = serde_json::from_slice(&response.bytes().await.unwrap()).unwrap();
 
     let boulder = &body["data"]["createBoulder"]["boulder"];
 
-    assert_eq!(status, 200);
     assert_eq!(boulder["title"], "hello world");
 
     let boulder_id = boulder["id"].as_str().unwrap();
