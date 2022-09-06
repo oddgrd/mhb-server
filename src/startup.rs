@@ -22,6 +22,7 @@ impl Application {
                 "/api/graphql",
                 get(graphql_playground).post(graphql_handler),
             )
+            .route("/health_check", get(health_check))
             .layer(Extension(graphql_schema));
 
         Ok(Self(app))
@@ -36,3 +37,6 @@ impl Application {
             .unwrap()
     }
 }
+
+/// Immediately returns a `200 OK`
+async fn health_check() {}

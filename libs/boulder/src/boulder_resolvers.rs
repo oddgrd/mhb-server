@@ -40,13 +40,14 @@ impl BoulderMutation {
     ) -> Result<MutateBoulderResult> {
         let boulders = ctx.data_unchecked::<Arc<dyn BoulderServiceTrait>>();
 
-        let boulder = boulders
-            .create(&input.title)
-            .await
-            .map_err(as_graphql_error(
-                "Error while creating boulder",
-                StatusCode::INTERNAL_SERVER_ERROR,
-            ))?;
+        let boulder =
+            boulders
+                .create(&input.title, input.grade)
+                .await
+                .map_err(as_graphql_error(
+                    "Error while creating boulder",
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                ))?;
 
         Ok(MutateBoulderResult {
             boulder: Some(boulder),

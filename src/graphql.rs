@@ -25,10 +25,12 @@ impl Context {
     }
 }
 
+/// Matches POST requests to /api/graphql
 pub async fn graphql_handler(schema: Extension<AppSchema>, req: GraphQLRequest) -> GraphQLResponse {
     schema.execute(req.into_inner()).await.into()
 }
 
+/// Matches GET requests to /api/graphql
 pub async fn graphql_playground() -> impl IntoResponse {
     Html(playground_source(GraphQLPlaygroundConfig::new(
         "/api/graphql",

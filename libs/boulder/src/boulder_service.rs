@@ -10,7 +10,7 @@ pub trait BoulderServiceTrait: Sync + Send {
     async fn get(&self, id: &str) -> anyhow::Result<Option<Boulder>>;
 
     /// Create a `Boulder` with the given title
-    async fn create(&self, title: &str) -> anyhow::Result<Boulder>;
+    async fn create(&self, title: &str, grade: i32) -> anyhow::Result<Boulder>;
 }
 
 /// The default `BoulderService` struct.
@@ -40,9 +40,10 @@ impl BoulderServiceTrait for BoulderService {
         Ok(boulder.into())
     }
 
-    async fn create(&self, title: &str) -> anyhow::Result<Boulder> {
+    async fn create(&self, title: &str, grade: i32) -> anyhow::Result<Boulder> {
         let boulder = boulder_model::ActiveModel {
             title: Set(title.into()),
+            grade: Set(grade),
             ..Default::default()
         }
         .insert(&*self.db)

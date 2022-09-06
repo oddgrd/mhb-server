@@ -6,6 +6,8 @@ use crate::boulder_model::Boulder;
 pub struct CreateBoulderInput {
     /// The boulder problem's title
     pub title: String,
+    /// The creator's suggested grade
+    pub grade: i32,
 }
 
 #[derive(Clone, Eq, PartialEq, SimpleObject)]
