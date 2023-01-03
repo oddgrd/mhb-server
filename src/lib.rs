@@ -8,7 +8,7 @@ use startup::Application;
 use sync_wrapper::SyncWrapper;
 
 #[shuttle_service::main]
-async fn mhb_api(#[shared::Postgres] pool: PgPool) -> shuttle_service::ShuttleAxum {
+async fn mhb_api(#[shuttle_shared_db::Postgres] pool: PgPool) -> shuttle_service::ShuttleAxum {
     sqlx::migrate!("./migrations")
         .run(&pool)
         .await

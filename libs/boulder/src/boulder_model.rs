@@ -1,7 +1,6 @@
 #![allow(missing_docs)]
 
 use async_graphql::SimpleObject;
-use chrono::{DateTime, FixedOffset};
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -31,10 +30,10 @@ pub struct Model {
     pub published: bool,
 
     /// The date and time the Boulder was last updated.
-    pub updated_at: DateTime<FixedOffset>,
+    pub updated_at: DateTime,
 
     /// The date and time the Boulder was created.
-    pub created_at: DateTime<FixedOffset>,
+    pub created_at: DateTime,
 }
 
 /// The Boulder GraphQL type is the same as the Boulder database Model.

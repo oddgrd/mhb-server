@@ -5,5 +5,5 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0"
-async-graphql = { version = "^4.0", features = ["chrono"] }
+async-graphql = { version = "5.0.4", features = ["chrono"] }
 http = "0.2.8"

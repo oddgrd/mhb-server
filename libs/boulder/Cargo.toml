@@ -9,15 +9,16 @@ path = "src/lib.rs"
 
 [dependencies]
 anyhow = "1"
-async-graphql = { version = "^4.0", features = ["chrono"] }
+async-graphql = { version = "5.0.4", features = ["chrono"] }
 async-trait = "0.1.49"
 chrono = { version = "0.4.20", features = ["serde"] }
 http = "0.2.8"
-mhb-utils = { path = "../utils" }
-sea-orm = { version = "^0.9", features = [
+mhb-utils = { workspace = true }
+sea-orm = { version = "0.10.6", features = [
     "sqlx-postgres",
     "runtime-tokio-native-tls",
     "macros",
     "mock",
+    "with-chrono"
 ], default-features = false }
 serde = { version = "1.0", features = ["derive"] }
