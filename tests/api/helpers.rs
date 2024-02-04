@@ -1,5 +1,4 @@
 use mhb_server::startup::Application;
-use serde_json::{json, Value};
 use sqlx::{postgres::PgConnectOptions, Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
 use uuid::Uuid;
@@ -8,19 +7,6 @@ pub struct TestApp {
     pub address: String,
     pub port: u16,
     pub api_client: reqwest::Client,
-}
-
-impl TestApp {
-    pub async fn graphql_query(&self, query: &str, variables: Value) -> reqwest::Response {
-        let body = json!({ "query": query, "variables": variables }).to_string();
-
-        self.api_client
-            .post(format!("{}/api/graphql", &self.address))
-            .body(body)
-            .send()
-            .await
-            .expect("Failed to execute request.")
-    }
 }
 
 /// Spawn a new application as a background task with a new database

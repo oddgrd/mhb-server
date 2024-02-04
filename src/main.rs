@@ -1,17 +1,13 @@
-pub mod graphql;
-pub mod schema;
-pub mod startup;
-
-use shuttle_runtime::CustomError;
 use sqlx::PgPool;
-use startup::Application;
+use mhb_server::startup::Application;
+use anyhow::Context;
 
 #[shuttle_runtime::main]
 async fn mhb_api(#[shuttle_shared_db::Postgres] pool: PgPool) -> shuttle_axum::ShuttleAxum {
     sqlx::migrate!("./migrations")
         .run(&pool)
         .await
-        .map_err(CustomError::new)?;
+        .context("failed to run migrations")?;
 
     let Application(app) = Application::build(pool).await?;
 

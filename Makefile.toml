@@ -19,5 +19,5 @@ args = ["migrate", "run"]
 [tasks.docker]
 workspace = false
 cwd = "./"
-command = "docker-compose"
-args = ["-f", "docker-compose.yml", "${@}"]
+command = "docker"
+args = ["compose", "-f", "docker-compose.yml", "${@}"]

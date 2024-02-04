@@ -1,29 +1,14 @@
 use axum::routing::get;
-use axum::{Extension, Router, Server};
+use axum::{Router, Server};
 use sqlx::PgPool;
 use std::net::SocketAddr;
-use std::sync::Arc;
-
-use crate::graphql::{graphql_handler, graphql_playground, Context};
-use crate::schema::create_schema;
 
 pub struct Application(pub Router);
 
 impl Application {
-    pub async fn build(pool: PgPool) -> anyhow::Result<Application> {
-        // Initialize the GraphQL context with the postgres pool provided by Shuttle
-        // in production or from a local Docker container in testing
-        let graphql_context = Arc::new(Context::init(pool).await?);
-
-        let graphql_schema = create_schema(graphql_context)?;
-
+    pub async fn build(_pool: PgPool) -> anyhow::Result<Application> {
         let app = Router::new()
-            .route(
-                "/api/graphql",
-                get(graphql_playground).post(graphql_handler),
-            )
-            .route("/health_check", get(health_check))
-            .layer(Extension(graphql_schema));
+            .route("/health_check", get(health_check));
 
         Ok(Self(app))
     }
