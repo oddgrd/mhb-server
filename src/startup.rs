@@ -1,7 +1,8 @@
 use axum::routing::get;
-use axum::{Router, Server};
+use axum::Router;
 use sqlx::PgPool;
 use std::net::SocketAddr;
+use tokio::net::TcpListener;
 
 pub struct Application(pub Router);
 
@@ -15,10 +16,8 @@ impl Application {
     /// Utility function to run the application in tests, in production Shuttle
     /// will assign an address and run it
     pub async fn run_until_stopped(self, addr: SocketAddr) {
-        Server::bind(&addr)
-            .serve(self.0.into_make_service())
-            .await
-            .unwrap()
+        let listener = TcpListener::bind(addr).await.unwrap();
+        axum::serve(listener, self.0).await.unwrap();
     }
 }
 
