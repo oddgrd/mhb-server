@@ -7,8 +7,7 @@ pub struct Application(pub Router);
 
 impl Application {
     pub async fn build(_pool: PgPool) -> anyhow::Result<Application> {
-        let app = Router::new()
-            .route("/health_check", get(health_check));
+        let app = Router::new().route("/health_check", get(health_check));
 
         Ok(Self(app))
     }

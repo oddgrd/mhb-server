@@ -40,6 +40,6 @@ async fn create_boulder_persists_the_new_boulder() {
     // let boulder: Value = serde_json::from_slice(&response.bytes().await.unwrap()).unwrap();
     //
     // // Verify the boulder we created is identical to the one we retrieved from the DB
-    // let persisted_boulder = todo!(); 
+    // let persisted_boulder = todo!();
     // assert_eq!(boulder, persisted_boulder);
 }

@@ -28,7 +28,7 @@ pub async fn spawn_app() -> TestApp {
     let port = addr.port();
 
     // Launch the app as a background task
-    _ = tokio::spawn(application.run_until_stopped(addr));
+    tokio::spawn(application.run_until_stopped(addr));
 
     let client = reqwest::Client::builder()
         .redirect(reqwest::redirect::Policy::none())

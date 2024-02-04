@@ -1,6 +1,6 @@
-use sqlx::PgPool;
-use mhb_server::startup::Application;
 use anyhow::Context;
+use mhb_server::startup::Application;
+use sqlx::PgPool;
 
 #[shuttle_runtime::main]
 async fn mhb_api(#[shuttle_shared_db::Postgres] pool: PgPool) -> shuttle_axum::ShuttleAxum {
