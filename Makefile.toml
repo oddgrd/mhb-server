@@ -18,6 +18,7 @@ args = ["migrate", "run"]
 
 [tasks.docker]
 workspace = false
+env = { "DATABASE_USERNAME" = "postgres", "DATABASE_PASSWORD" = "password" }
 cwd = "./"
-command = "docker-compose"
-args = ["-f", "docker-compose.yml", "${@}"]
+command = "docker"
+args = ["compose", "-f", "docker-compose.yml", "${@}"]
