@@ -1,3 +1,5 @@
+This (WIP) project is a refactor of my previous [MyHomeBoard](https://github.com/oddgrd/myhomeboard) backend which was written in Typescript.
+
 ## Development
 
 ### Run locally:

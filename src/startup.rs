@@ -1,14 +1,28 @@
-use axum::routing::get;
+use axum::routing::{get, post};
 use axum::Router;
 use sqlx::PgPool;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
 
+use crate::dal::{Dal, Postgres};
+use crate::handlers::{create_boulder, get_boulder, health_check};
 pub struct Application(pub Router);
 
+#[derive(Clone)]
+pub struct AppState<D: Dal> {
+    pub dal: D,
+}
+
 impl Application {
-    pub async fn build(_pool: PgPool) -> anyhow::Result<Application> {
-        let app = Router::new().route("/health_check", get(health_check));
+    pub async fn build(pool: PgPool) -> anyhow::Result<Application> {
+        let state = AppState {
+            dal: Postgres::new(pool),
+        };
+        let app = Router::new()
+            .route("/health_check", get(health_check))
+            .route("/boulders", post(create_boulder))
+            .route("/boulders/:boulder_id", get(get_boulder))
+            .with_state(state);
 
         Ok(Self(app))
     }
@@ -20,6 +34,3 @@ impl Application {
         axum::serve(listener, self.0).await.unwrap();
     }
 }
-
-/// Immediately returns a `200 OK`
-async fn health_check() {}
