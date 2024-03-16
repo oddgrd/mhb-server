@@ -1,4 +1,4 @@
-use mhb_server::models::NewBoulder;
+use mhb_server::models::boulder::NewBoulder;
 
 use reqwest::StatusCode;
 use serde_json::Value;

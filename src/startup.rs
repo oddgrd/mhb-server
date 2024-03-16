@@ -1,27 +1,75 @@
 use axum::routing::{get, post};
 use axum::Router;
+use axum_login::tower_sessions::cookie::SameSite;
+use axum_login::tower_sessions::{Expiry, MemoryStore, SessionManagerLayer};
+use axum_login::AuthManagerLayerBuilder;
+use oauth2::RedirectUrl;
+use oauth2::{basic::BasicClient, AuthUrl, ClientId, ClientSecret, TokenUrl};
 use sqlx::PgPool;
+use std::env;
 use std::net::SocketAddr;
+use std::sync::Arc;
+use time::Duration;
 use tokio::net::TcpListener;
 
 use crate::dal::{Dal, Postgres};
-use crate::handlers::{create_boulder, get_boulder, health_check};
+use crate::handlers::boulder::{create_boulder, get_boulder};
+use crate::handlers::user::{get_login, google_oauth_callback, logout, post_login};
+use crate::services::user::UserService;
+
 pub struct Application(pub Router);
 
 #[derive(Clone)]
-pub struct AppState<D: Dal> {
-    pub dal: D,
+pub struct AppState {
+    pub dal: Arc<Box<dyn Dal>>,
+    pub user_service: UserService,
 }
 
 impl Application {
-    pub async fn build(pool: PgPool) -> anyhow::Result<Application> {
+    pub fn build(pool: PgPool) -> anyhow::Result<Application> {
+        dotenvy::dotenv()?;
+
+        let client_id = env::var("CLIENT_ID")
+            .map(ClientId::new)
+            .expect("CLIENT_ID should be provided.");
+        let client_secret = env::var("CLIENT_SECRET")
+            .map(ClientSecret::new)
+            .expect("CLIENT_SECRET should be provided");
+        let google_callback_url =
+            env::var("GOOGLE_CALLBACK_URL").expect("GOOGLE_CALLBACK_URL should be set");
+
+        let auth_url = AuthUrl::new("https://accounts.google.com/o/oauth2/v2/auth".to_string())?;
+        let token_url = TokenUrl::new("https://oauth2.googleapis.com/token".to_string())?;
+        let client = BasicClient::new(client_id, Some(client_secret), auth_url, Some(token_url))
+            .set_redirect_uri(RedirectUrl::new(google_callback_url).unwrap());
+
+        let dal: Arc<Box<dyn Dal>> = Arc::new(Box::new(Postgres::new(pool)));
+        let user_service = UserService::new(dal.clone(), client);
+
         let state = AppState {
-            dal: Postgres::new(pool),
+            dal,
+            user_service: user_service.clone(),
         };
+
+        let session_store = MemoryStore::default();
+
+        let session_layer = SessionManagerLayer::new(session_store)
+            .with_secure(false)
+            .with_same_site(SameSite::Lax) // Ensure we send the cookie from the OAuth redirect.
+            .with_expiry(Expiry::OnInactivity(Duration::days(7)));
+
+        let auth_layer = AuthManagerLayerBuilder::new(user_service, session_layer).build();
+
         let app = Router::new()
-            .route("/health_check", get(health_check))
             .route("/boulders", post(create_boulder))
             .route("/boulders/:boulder_id", get(get_boulder))
+            .route("/login", get(get_login).post(post_login))
+            .route("/logout", get(logout))
+            // If the callback route is changed, the "Authorized redirect URIs" in the Google Cloud
+            // console has to be updated as well.
+            .route("/oauth/google/callback", get(google_oauth_callback))
+            .layer(auth_layer)
+            .route("/health_check", get(|| async {}))
             .with_state(state);
 
         Ok(Self(app))

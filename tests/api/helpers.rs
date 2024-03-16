@@ -18,9 +18,7 @@ pub async fn spawn_app() -> TestApp {
     let pool = configure_database(&db_config).await;
 
     // Build the app
-    let application = Application::build(pool)
-        .await
-        .expect("Failed to build application");
+    let application = Application::build(pool).expect("Failed to build application");
 
     // Bind with port `0` to assign a random port for each test
     let listener = TcpListener::bind("localhost:0").expect("Failed to bind port");

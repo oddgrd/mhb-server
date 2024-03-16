@@ -9,7 +9,7 @@ async fn mhb_api(#[shuttle_shared_db::Postgres] pool: PgPool) -> shuttle_axum::S
         .await
         .context("failed to run migrations")?;
 
-    let Application(app) = Application::build(pool).await?;
+    let Application(app) = Application::build(pool)?;
 
     Ok(app.into())
 }
