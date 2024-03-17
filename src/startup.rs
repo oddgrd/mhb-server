@@ -3,15 +3,14 @@ use axum::Router;
 use axum_login::tower_sessions::cookie::SameSite;
 use axum_login::tower_sessions::{Expiry, MemoryStore, SessionManagerLayer};
 use axum_login::AuthManagerLayerBuilder;
-use oauth2::RedirectUrl;
-use oauth2::{basic::BasicClient, AuthUrl, ClientId, ClientSecret, TokenUrl};
+use oauth2::{basic::BasicClient, AuthUrl, TokenUrl};
 use sqlx::PgPool;
-use std::env;
 use std::net::SocketAddr;
 use std::sync::Arc;
 use time::Duration;
 use tokio::net::TcpListener;
 
+use crate::config::AppConfig;
 use crate::dal::{Dal, Postgres};
 use crate::handlers::boulder::{create_boulder, get_boulder};
 use crate::handlers::user::{get_login, google_oauth_callback, logout, post_login};
@@ -26,22 +25,18 @@ pub struct AppState {
 }
 
 impl Application {
-    pub fn build(pool: PgPool) -> anyhow::Result<Application> {
-        dotenvy::dotenv()?;
-
-        let client_id = env::var("CLIENT_ID")
-            .map(ClientId::new)
-            .expect("CLIENT_ID should be provided.");
-        let client_secret = env::var("CLIENT_SECRET")
-            .map(ClientSecret::new)
-            .expect("CLIENT_SECRET should be provided");
-        let google_callback_url =
-            env::var("GOOGLE_CALLBACK_URL").expect("GOOGLE_CALLBACK_URL should be set");
-
+    pub fn build(
+        pool: PgPool,
+        AppConfig {
+            client_id,
+            client_secret,
+            google_callback_url,
+        }: AppConfig,
+    ) -> anyhow::Result<Application> {
         let auth_url = AuthUrl::new("https://accounts.google.com/o/oauth2/v2/auth".to_string())?;
         let token_url = TokenUrl::new("https://oauth2.googleapis.com/token".to_string())?;
         let client = BasicClient::new(client_id, Some(client_secret), auth_url, Some(token_url))
-            .set_redirect_uri(RedirectUrl::new(google_callback_url).unwrap());
+            .set_redirect_uri(google_callback_url);
 
         let dal: Arc<Box<dyn Dal>> = Arc::new(Box::new(Postgres::new(pool)));
         let user_service = UserService::new(dal.clone(), client);

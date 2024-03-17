@@ -1,4 +1,5 @@
-use mhb_server::startup::Application;
+use mhb_server::{config::AppConfig, startup::Application};
+use oauth2::{ClientId, ClientSecret, RedirectUrl};
 use sqlx::{postgres::PgConnectOptions, Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
 use uuid::Uuid;
@@ -17,8 +18,17 @@ pub async fn spawn_app() -> TestApp {
     // Create and migrate the database
     let pool = configure_database(&db_config).await;
 
+    let config = AppConfig {
+        client_id: ClientId::new("test_id".to_string()),
+        client_secret: ClientSecret::new("test_secret".to_string()),
+        google_callback_url: RedirectUrl::new(
+            "http://localhost:8000/oauth/google/callback".to_string(),
+        )
+        .unwrap(),
+    };
+
     // Build the app
-    let application = Application::build(pool).expect("Failed to build application");
+    let application = Application::build(pool, config).expect("Failed to build application");
 
     // Bind with port `0` to assign a random port for each test
     let listener = TcpListener::bind("localhost:0").expect("Failed to bind port");

@@ -1289,13 +1289,13 @@ dependencies = [
  "axum 0.7.4",
  "axum-login",
  "chrono",
- "dotenvy",
  "oauth2",
  "reqwest",
  "serde",
  "serde_json",
  "shuttle-axum",
  "shuttle-runtime",
+ "shuttle-secrets",
  "shuttle-shared-db",
  "sqlx",
  "thiserror",
@@ -2144,6 +2144,17 @@ dependencies = [
  "tokio-stream",
  "tonic",
  "tracing-subscriber",
+]
+
+[[package]]
+name = "shuttle-secrets"
+version = "0.41.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4d9d394205acb672e5b8912294603341e9d8f3eae9a194e9acf511c4c0538b0c"
+dependencies = [
+ "async-trait",
+ "serde_json",
+ "shuttle-service",
 ]
 
 [[package]]

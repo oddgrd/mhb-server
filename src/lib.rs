@@ -1,3 +1,4 @@
+pub mod config;
 pub mod dal;
 pub mod error;
 pub mod handlers;

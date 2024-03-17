@@ -11,13 +11,13 @@ askama_axum = "0.4.0"
 axum = { version = "0.7" }
 axum-login = "0.13.1"
 chrono = "0.4.33"
-dotenvy = "0.15.7"
 oauth2 = "4.4.2"
 reqwest = { version = "0.11", default-features = false, features = ["json"] }
 serde = { version = "1.0", features = ["derive"] }
 shuttle-axum = "0.41.0"
 shuttle-runtime = "0.41.0"
 shuttle-shared-db =  { version = "0.41.0", features = ["postgres", "sqlx"] }
+shuttle-secrets = "0.41.0"
 sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "migrate", "chrono"] }
 thiserror = "1.0.56"
 time = "0.3.34"
