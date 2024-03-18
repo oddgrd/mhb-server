@@ -34,6 +34,7 @@ pub async fn google_oauth_callback(
         state: new_state,
     }): Query<AuthzResp>,
 ) -> impl IntoResponse {
+    // Ensure the callback is coming from an auth flow initiated by us.
     let Ok(Some(old_state)) = session.get(CSRF_STATE_KEY).await else {
         tracing::error!("failed to get old state");
         return StatusCode::BAD_REQUEST.into_response();

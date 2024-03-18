@@ -1,6 +1,6 @@
 use anyhow::Context;
 use oauth2::{ClientId, ClientSecret, RedirectUrl};
-use shuttle_secrets::SecretStore;
+use shuttle_runtime::SecretStore;
 
 pub struct AppConfig {
     pub client_id: ClientId,

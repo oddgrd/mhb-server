@@ -1,12 +1,12 @@
 use anyhow::Context;
 use mhb_server::{config::AppConfig, startup::Application};
-use shuttle_secrets::SecretStore;
+use shuttle_runtime::SecretStore;
 use sqlx::PgPool;
 
 #[shuttle_runtime::main]
 async fn mhb_api(
     #[shuttle_shared_db::Postgres] pool: PgPool,
-    #[shuttle_secrets::Secrets] secrets: SecretStore,
+    #[shuttle_runtime::Secrets] secrets: SecretStore,
 ) -> shuttle_axum::ShuttleAxum {
     sqlx::migrate!("./migrations")
         .run(&pool)

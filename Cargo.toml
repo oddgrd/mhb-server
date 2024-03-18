@@ -14,10 +14,9 @@ chrono = "0.4.33"
 oauth2 = "4.4.2"
 reqwest = { version = "0.11", default-features = false, features = ["json"] }
 serde = { version = "1.0", features = ["derive"] }
-shuttle-axum = "0.41.0"
-shuttle-runtime = "0.41.0"
-shuttle-shared-db =  { version = "0.41.0", features = ["postgres", "sqlx"] }
-shuttle-secrets = "0.41.0"
+shuttle-axum = "0.42.0"
+shuttle-runtime = "0.42.0"
+shuttle-shared-db =  { version = "0.42.0", features = ["postgres", "sqlx"] }
 sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "migrate", "chrono"] }
 thiserror = "1.0.56"
 time = "0.3.34"
